@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import React from 'react';
 
-const FilmCard = ( {filmInfo: {ratingNumber, title, description}, storeRating } ) => {
+const FilmCard = ( {filmInfo: {ratingNumber, title, description}, storeRating, handleSubmitEmail } ) => {
      
     const [starCount, setStarCount] = useState(ratingNumber);
 
@@ -45,7 +45,7 @@ const FilmCard = ( {filmInfo: {ratingNumber, title, description}, storeRating } 
                 </TouchableOpacity >
 
 
-                <TouchableOpacity onPress={null}>
+                <TouchableOpacity onPress={() => handleSubmitEmail()}>
                     <View style={styles.eachButton} >
                         <Text style={{color: "black", fontSize: 16, fontWeight: '500'}}>
                             Submit
