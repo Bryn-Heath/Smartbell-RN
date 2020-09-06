@@ -5,67 +5,72 @@ import FilmCard from './components/FilmCard';
 import { AsyncStorage } from 'react-native';
 
 import filmList from './movies.json'
- 
-const RATING_LIST = 'rating_list'
-const RATED_LIST = 'rated_list'
-
+  
 // const nextFilm = filmList[1]
 
 export default function App() {
-  const [AppFilms, setAppFilms] = useState([...filmList])
-
+  const [AppFilms, setAppFilms] = useState([])
   const nextFilm = AppFilms[0]
-
-  const [filmRatingState, setFilmRatingState] = useState([])
-  const [ratedFilmsState, setFilmRated] = useState([])
-
+  
   const storeScoreRating = async (addFilmRatingState) => {
-    setFilmRatingState([...filmRatingState, addFilmRatingState])
-    try{
-      await AsyncStorage.setItem(RATING_LIST, JSON.stringify(filmRatingState))
+    // const keyAndData = `${nextFilm.id}, ${addFilmRatingState}`
+      try {
+        await AsyncStorage.setItem(`${nextFilm.id}`, `${addFilmRatingState}`)
+          console.log('setting',`${nextFilm.id}`, `${addFilmRatingState}`) 
+      } catch (e) {
+        console.log(e);
+      }
+  }
+        
+  const getScoreRating = async (filmList) => {
+    try {
+      // uncomment below to clear local data
+      await AsyncStorage.clear()
+
+       let localKeyValues = await AsyncStorage.getAllKeys((err, keys) => {
+          AsyncStorage.multiGet(keys, (err, stores) => { 
+          stores.map((result, i, store) => {  
+          });
+           });
+      });
+        
+        console.log('localKeyValues',  localKeyValues )
+ 
+      if (localKeyValues.length > 0) { 
+        console.log('hit')
+        const removingFilmsArr = [ ...filmList.filter(film =>  
+          {return film.id !== localKeyValues.find(key => key == film.id) }
+        )]
+        setAppFilms(removingFilmsArr)
+      } else { return  setAppFilms(filmList) }
+
     } catch (e) {
       console.log(e);
     }
   };
-
-  const storeRated = async (key, ratedFilmsState) => {
-    try{
-      await AsyncStorage.setItem(RATED_LIST, JSON.stringify(ratedFilmsState))
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getScoreRating = async ( ) => { 
-    try{
-      const value = await AsyncStorage.getItem(RATING_LIST)
-      setAppFilms([...filmList, value])
-    } catch (e) {
-      console.log(e);
-    }
-  }; 
 
   useEffect(() => {
-    return () => {
-     setAppFilms(getScoreRating)
-    };
-  }, [0])
+    getScoreRating(filmList)
+  }, [null])
 
   return (
-    <View style={styles.container}>
-      
-      <FilmCard key={nextFilm.id} filmInfo={nextFilm} storeRating={() => storeScoreRating()} />
-      
-      <StatusBar style="auto" />
-      
-    </View>
+    <>
+      { nextFilm ?
+        <View style={ styles.container }>
+          <FilmCard key={ nextFilm.id } filmRating={ nextFilm.rating } filmInfo={ nextFilm } storeRating={ (starCount) => storeScoreRating(starCount) } />
+          <StatusBar style="auto" />
+        </View>
+        : null
+      }
+
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
-    flex: 3, 
+    flex: 3,
     flexDirection: 'column',
   },
 });

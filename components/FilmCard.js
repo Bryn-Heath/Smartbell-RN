@@ -3,15 +3,14 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useState } from 'react';
 import React from 'react';
 
-const FilmCard = ( {filmInfo: {title, description}, storeRating } ) => {
+const FilmCard = ( {filmInfo: {ratingNumber, title, description}, storeRating } ) => {
      
-    const [starCount, setStarCount] = useState(0)
+    const [starCount, setStarCount] = useState(ratingNumber);
 
     const onStarRatingPress = (rating) => {
-        setStarCount(rating) 
-    }
+        setStarCount(rating)
+    };
 
-  
     return (
         
         <>
@@ -37,8 +36,8 @@ const FilmCard = ( {filmInfo: {title, description}, storeRating } ) => {
 
             <View style={styles.bottomButtons} > 
             
-                <TouchableOpacity onPress={() => console.log('fdgdgdfgf')}>
-                    <View style={styles.eachButton}  >
+                <TouchableOpacity onPress={() => storeRating(starCount)}>
+                    <View style={styles.eachButton} >
                         <Text style={{color: "black", fontSize: 16, fontWeight: '500'}}>
                             Score
                         </Text>
@@ -47,7 +46,7 @@ const FilmCard = ( {filmInfo: {title, description}, storeRating } ) => {
 
 
                 <TouchableOpacity onPress={null}>
-                    <View style={styles.eachButton}  >
+                    <View style={styles.eachButton} >
                         <Text style={{color: "black", fontSize: 16, fontWeight: '500'}}>
                             Submit
                         </Text>
@@ -66,7 +65,6 @@ const FilmCard = ( {filmInfo: {title, description}, storeRating } ) => {
     container: {
         flex: 1,
         justifyContent: 'center',
-         // justifyContent: 'center', 
     },
 
     details: { 
@@ -77,9 +75,7 @@ const FilmCard = ( {filmInfo: {title, description}, storeRating } ) => {
         alignItems: 'flex-start', 
     },
 
-    rating: {
-        scaleX: 100,
-        scaleY: 100,
+    rating: { 
       backgroundColor: '#fff', 
       alignItems: 'center',
       justifyContent: 'center',
@@ -93,8 +89,8 @@ const FilmCard = ( {filmInfo: {title, description}, storeRating } ) => {
     },
 
     eachButton: {
-        width: '120px',
-        height: '50px',
+        width: 120,
+        height: 50,
         borderWidth: 1,
         shadowOpacity: 1,
         shadowRadius: 1,
